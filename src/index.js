@@ -122,6 +122,8 @@ export default class extends Component {
     showsButtons: PropTypes.bool,
     disableNextButton: PropTypes.bool,
     disablePrevButton: PropTypes.bool,
+    disableSwipeRight: PropTypes.bool,
+    progress: PropTypes.number,
     loadMinimal: PropTypes.bool,
     loadMinimalSize: PropTypes.number,
     loadMinimalLoader: PropTypes.element,
@@ -167,6 +169,8 @@ export default class extends Component {
     showsButtons: false,
     disableNextButton: false,
     disablePrevButton: false,
+    disableSwipeRight: false,
+    progress: 0,
     loop: true,
     loadMinimal: false,
     loadMinimalSize: 1,
@@ -573,7 +577,9 @@ export default class extends Component {
     if (state.dir === 'x') x = diff * state.width
     if (state.dir === 'y') y = diff * state.height
 
-    this.scrollView && this.scrollView.scrollTo({ x, y, animated })
+    setTimeout(() => {
+        this.scrollView && this.scrollView.scrollTo({ x, y, animated })
+    }, 0)
 
     // update scroll state
     this.internals.isScrolling = true
@@ -820,6 +826,10 @@ export default class extends Component {
       if (loop) {
         pages.unshift(total - 1 + '')
         pages.push('0')
+      }
+
+      if(this.props.disableSwipeRight) {
+        pages = pages.filter((page, i) => i <= this.props.progress)
       }
 
       pages = pages.map((page, i) => {
